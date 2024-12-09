@@ -26,6 +26,26 @@ class StudentController extends Controller
         {
             $student->delete();
         
-            return redirect()->route('dashboard')->with('success', 'Student deleted successfully');
+            return redirect()->route('dashboard')->with('deleted', 'Student deleted successfully');
+        }
+
+        public function edit(Student $student)
+        {
+            return view('edit-student', compact('student'));
+        }
+
+        public function update(Request $request, Student $student)
+        {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:students,email,'. $student->id,
+                'phone' => 'required|string|max:15',
+                'address' => 'required|string|max:255',
+            ]);
+
+            $student->update($validated);
+
+
+            return redirect()->route('dashboard')->with('success', 'Student Updated Successfully');
         }
 }
